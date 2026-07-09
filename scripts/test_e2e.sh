@@ -89,7 +89,7 @@ cat > "$STUB" <<EOF
 #!/bin/sh
 # Stub of the TV's tizenscreenshot: "captures" by copying a sample PNG
 # to the fixed output path, like the real binary does.
-cp "$HERE/assets/sample_screen.png" "$SHOT_OUT"
+cp "$ROOT/mock/assets/sample_screen.png" "$SHOT_OUT"
 EOF
 chmod +x "$STUB"
 
@@ -145,7 +145,9 @@ say "test 3: invalid JSON -> one LLM repair pass"
 set_mode invalid
 [ "$(post_analyze "$WORK/r3.json")" = "200" ] || fail "expected HTTP 200"
 assert_schema "$WORK/r3.json" no || fail "schema"
-grep -q "llm_repair" "$WORK/sidecar.log" || fail "repair stage never ran"
+# Wait a moment for logs to flush
+sleep 0.2
+grep -q "llm_repair" "$WORK/sidecar.log" || { echo "Log contents:"; cat "$WORK/sidecar.log"; fail "repair stage never ran"; }
 pass "invalid output repaired via LLM pass"
 
 say "test 4: unrepairable garbage -> structured error object"
