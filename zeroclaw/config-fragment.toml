@@ -1,0 +1,16 @@
+# Optional fragment to merge into ~/.zeroclaw/config.toml on the TV.
+# Only needed if you ALSO want ZeroClaw's agent to be able to trigger the
+# analyze-screen pipeline (the Tizen app itself talks straight to the sidecar
+# and needs none of this).
+
+[autonomy]
+# Let the agent's shell tool invoke the screenshot binary directly if you
+# ever want it to (exec mode only). Merge into the existing allowed_commands
+# list rather than replacing it.
+allowed_commands = ["tizenscreenshot"]
+
+# The agent can call the sidecar via its built-in http_request tool; make
+# sure that tool isn't excluded for your channel. With this in place the
+# agent can run:
+#   http_request POST http://127.0.0.1:8787/analyze-screen
+# and receive the same validated JSON the TV app gets.
